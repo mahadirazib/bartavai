@@ -85,7 +85,7 @@ class AuthController extends Controller
         
         
         flash()->error('Email or Password may be wrong.');
-        return back();
+        return back()->withInput();
 
     }
 
