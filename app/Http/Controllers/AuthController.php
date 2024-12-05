@@ -15,12 +15,6 @@ use App\Models\User;
 class AuthController extends Controller
 {
     
-    public function home()
-    {
-        return view('home');
-    }
-
-    
     public function showRegisterForm()
     {
         return view('auth.register');
@@ -135,6 +129,9 @@ class AuthController extends Controller
     }
 
 
+    public function updatePassword(){
+        //
+    }
 
 
 

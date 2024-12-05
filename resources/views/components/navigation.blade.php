@@ -21,10 +21,16 @@
             </div>
             <div class="hidden sm:ml-6 sm:flex gap-2 sm:items-center">
                 <!-- Create Post Button (Hidden on Mobile) -->
-                <button type="button"
-                    class="text-gray-900 hover:text-white border-2 border-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
-                    Create Post
-                </button>
+                @if(Route::is('home') )
+                    <button type="button" onclick="showPostForm()"
+                        class="text-gray-900 hover:text-white border-2 border-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
+                        Create Post
+                    </button>
+                @else
+                    <a href="{{ route('post.create') }}" class="text-gray-900 hover:text-white border-2 border-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
+                        Create Post
+                    </a>
+                @endif
 
                 <!-- Notification Button -->
                 <button type="button"
@@ -119,6 +125,18 @@
     <!-- Mobile Menu -->
     <div x-show="mobileMenuOpen" class="sm:hidden" id="mobile-menu">
         <div class="space-y-1 px-2 pt-2 pb-3">
+
+            <a 
+                @if(Route::is('home') )
+                    href="#"  
+                    onclick="showPostForm()" @click="mobileMenuOpen = !mobileMenuOpen"
+                @else
+                    href="{{ route('post.create') }}"  
+                @endif
+
+                class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">
+                Create Post
+            </a>
             <a href="#"
                 class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">
                 Discover

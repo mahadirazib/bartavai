@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use App\Models\UserPost;
+
 class UserPostRequest extends FormRequest
 {
     /**
@@ -11,7 +13,8 @@ class UserPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $user_post = UserPost::find($this->route('post'));
+        return $user_post->user_id == auth()->user()->id;
     }
 
     /**
@@ -22,7 +25,8 @@ class UserPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'content' => 'required',
+            'post_status' => 'required|in:draft,post'
         ];
     }
 }
