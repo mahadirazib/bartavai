@@ -2,13 +2,44 @@
 
 @section('content')
   <main class="container max-w-xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen">
-    <x-form :action="route('profile.update')" >
+    <x-form :action="route('profile.update')">
       <div class="space-y-12">
         <div class="border-b border-gray-900/10 pb-12">
-          <h2 class="text-xl font-semibold leading-7 text-gray-900">Edit Profile</h2>
-          <p class="mt-1 text-sm leading-6 text-gray-600">
-            This information will be displayed publicly, so be careful what you share.
-          </p>
+
+          <div class="flex justify-start items-center space-x-4">
+            <div class="relative block aspect-square rounded-full group">
+              <!-- Profile Picture -->
+              <img class="max-w-44 object-cover aspect-square rounded-full border-2 border-gray-800 group-hover:brightness-75 cursor-pointer"
+                  src="{{ auth()->user()->pro_pic ? asset('storage/' . auth()->user()->pro_pic) : 'https://via.placeholder.com/150' }}"
+                  alt="Profile Picture" id="profilePic">
+          
+              <!-- Hidden File Input -->
+              <input type="file" name="pro_pic" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  accept="image/*" onchange="previewImage(event)">
+            </div>
+
+            <script>
+              function previewImage(event) {
+                  const file = event.target.files[0];
+                  if (file) {
+                      const reader = new FileReader();
+                      reader.onload = function (e) {
+                          document.getElementById('profilePic').src = e.target.result; // Update the profile picture
+                      };
+                      reader.readAsDataURL(file);
+                  }
+              }
+            </script>
+          
+  
+            <div class="block">
+              <h2 class="text-xl font-semibold leading-7 text-gray-900">Edit Profile</h2>
+              <p class="mt-1 text-sm leading-6 text-gray-600">
+                This information will be displayed publicly, so be careful what you share.
+              </p>
+            </div>
+          </div>
+
 
           <div class="mt-10 border-b border-gray-900/10 pb-12">
             <div class="grid grid-cols- gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -17,6 +48,9 @@
               </div>
               <div class="sm:col-span-3">
                 <x-input name="lname" type="text" label="Last name" value="{{ auth()->user()->lname }}" required />
+              </div>
+              <div class="col-span-full">
+                <x-input name="name" type="text" label="Nickname" value="{{ auth()->user()->name }}" />
               </div>
               <div class="col-span-full">
                 <x-input name="email" type="email" label="Email Address" value="{{ auth()->user()->email }}" required />

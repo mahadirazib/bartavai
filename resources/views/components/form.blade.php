@@ -1,5 +1,5 @@
 
-<form action="{{ $action }}" method="{{ $method ?? 'POST' }}" {{ $attributes->merge(['class' => 'space-y-6']) }}>
+<form action="{{ $action }}" method="{{ $method ?? 'POST' }}" {{ $attributes->merge(['class' => 'space-y-6']) }} enctype="multipart/form-data">
   @csrf
   @if(strtoupper($method ?? 'POST') !== 'GET' && strtoupper($method ?? 'POST') !== 'POST')
       @method($method)

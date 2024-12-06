@@ -13,7 +13,7 @@
     </div>
     <hr class="my-6 sm:mx-auto border-gray-700 lg:my-8" />
     <span class="block text-sm sm:text-center text-gray-200">
-      © {{ date('Y') }} <a href="/" class="hover:underline">Barta</a>. All Rights Reserved.
+      © {{ date('Y') }} <a href="/" class="hover:underline">Barta Vai</a>. All Rights Reserved.
     </span>
   </div>
 </footer>

@@ -9,14 +9,35 @@
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                     <a href="#"
-                        class="inline-flex items-center border-b-2 border-gray-800 px-1 pt-1 text-sm font-semibold text-gray-900">
+                        class="inline-flex items-center border-b-2 px-1 pt-1 text-sm hover:border-gray-300 hover:text-gray-800
+                        @if(Route::is('home'))
+                            font-semibold text-gray-900 border-gray-800
+                        @else
+                            border-transparent font-medium text-gray-600
+                        @endif
+                        ">
                         Discover
                     </a>
                     <a href="#"
-                        class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600 hover:border-gray-300 hover:text-gray-800">For
-                        you</a>
-                    <a href="#"
-                        class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600 hover:border-gray-300 hover:text-gray-800">People</a>
+                        class="inline-flex items-center border-b-2 px-1 pt-1 text-sm hover:border-gray-300 hover:text-gray-800
+                        @if(Route::is('profile'))
+                            font-semibold text-gray-900 border-gray-800
+                        @else
+                            border-transparent font-medium text-gray-600
+                        @endif
+                        ">
+                        For you
+                    </a>
+                    <a href="{{ route('user.index') }}"
+                        class="inline-flex items-center border-b-2 px-1 pt-1 text-sm hover:border-gray-300 hover:text-gray-800
+                        @if(Route::is('user.index', 'user.public.profile'))
+                            font-semibold text-gray-900 border-gray-800
+                        @else
+                            border-transparent font-medium text-gray-600
+                        @endif
+                        ">
+                        People
+                    </a>
                 </div>
             </div>
             <div class="hidden sm:ml-6 sm:flex gap-2 sm:items-center">
@@ -63,7 +84,7 @@
                                 class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                 id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                 <span class="sr-only">Open user menu</span>
-                                <img class="h-8 w-8 rounded-full" src="{{ asset("storage/".auth()->user()->pro_pic) }}"
+                                <img class="w-8 object-cover aspect-square rounded-full" src="{{ asset("storage/".auth()->user()->pro_pic) }}"
                                     alt="{{ auth()->user()->name }}" />
                             </button>
                         </div>

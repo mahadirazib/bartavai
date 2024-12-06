@@ -26,7 +26,8 @@ class UserPostRequest extends FormRequest
     {
         return [
             'content' => 'required',
-            'post_status' => 'required|in:draft,post'
+            'post_status' => 'required|in:draft,post',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ];
     }
 }

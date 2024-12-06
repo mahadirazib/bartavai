@@ -4,10 +4,7 @@
 
 @section('content')
 <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 min-h-screen">
-    
-    @php
-        $user = auth()->user();
-    @endphp
+
     <x-card-profile :user='$user' />
 
 
@@ -16,7 +13,7 @@
             <x-card-post :post='$post'  />
         @endforeach
     </section>
-
+    {{ $posts->links() }}
 
 
 </main>

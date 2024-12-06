@@ -5,34 +5,7 @@
 @php
   $content = $post->content;
   $post_id = $post->id;
-
-  $current_time = now();
-  $post_time = Carbon\Carbon::parse($post->created_at)->format('Y-m-d H:i:s');
-  
-  $view_count = $post->view_count;
-  $timeDiffs = "---";
-
-  $year_difference = (int)(Carbon\Carbon::parse($post->created_at))->diffInYears(now());
-  if($year_difference>0){
-    $timeDiffs = $year_difference == 1 ? $year_difference." year ago": $year_difference . " years ago";
-  }else {
-    $month_difference = (int)(Carbon\Carbon::parse($post->created_at))->diffInMonths(now());
-    if($month_difference>0){
-      $timeDiffs = $month_difference == 1 ? $month_difference. " month ago" : $month_difference . " months ago";
-    }else{
-      $day_difference = (int)(Carbon\Carbon::parse($post->created_at))->diffInDays(now());
-      if($day_difference>0){
-        $timeDiffs = $day_difference == 1 ? $day_difference . " day ago" : $day_difference . " days ago";
-      }else {
-        $hour_difference = (int)(Carbon\Carbon::parse($post->created_at))->diffInHours(now()); 
-        if($hour_difference>0){
-          $timeDiffs = $hour_difference == 1 ? $hour_difference . " houre ago": $hour_difference . " hours ago";
-        }else {
-          $timeDiffs = (int)(Carbon\Carbon::parse($post->created_at))->diffInMinutes(now()) . " minutes ago";
-        }
-      }
-    }
-  }
+  $post_image = $post->image;
 
 @endphp
 
@@ -48,26 +21,48 @@
 
   <form method="POST" 
     enctype="multipart/form-data"
-    class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6 space-y-3"
+    class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6 md:py-5 sm:py-4"
     action="{{ route('post.update', $post_id) }}">
     @csrf
     @method('PUT')
 
     <div>
       <div class="flex items-start ">
-        <!-- User Avatar -->
-      <div class="flex-shrink-0">
-        <img
-          class="h-10 w-10 rounded-full object-cover"
-          src="{{ asset("storage/".auth()->user()->pro_pic) }}"
-          alt="{{ auth()->user()->name }}" />
-      </div>
-        <!-- /User Avatar -->
 
         <!-- Content -->
         <div class="text-gray-700 font-normal w-full">
+          
+          @if (isset($post_image) && file_exists(public_path('storage/' . $post_image)))
+          <div class="w-full relative group">
+            <!-- Image with hover effect -->
+            <img src="{{ asset('storage/' . $post_image) }}"
+              class="min-h-auto w-full rounded-lg object-cover max-h-64 md:max-h-72 mb-6 hover:brightness-75 group-hover:brightness-75 cursor-pointer"
+              alt="Post Image" id="postImage" />
+          </div>
+          @else
+            <img src=""
+            class="min-h-auto w-full rounded-lg object-cover max-h-64 md:max-h-72 mb-6 hover:brightness-75 group-hover:brightness-75 cursor-pointer hidden"
+            alt="Post Image" id="postImage" />
+          @endif
+
+          <script>
+            function previewImage(event) {
+              const file = event.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                  document.getElementById('postImage').src = e.target.result; // Update the profile picture
+                };
+                reader.readAsDataURL(file);
+
+                document.getElementById('postImage').classList.remove('hidden');
+              }
+            }
+
+          </script>
+
           <textarea required
-            class="block w-full min-h-60 max-h-fit p-2 pt-2 text-gray-900 bg-gray-100 ms-2 rounded-lg border-none outline-none focus:ring-0 focus:ring-offset-0"
+            class="block w-full min-h-60 p-2 pt-2 text-gray-900 bg-gray-100 ms-2 rounded-lg border-none outline-none focus:ring-0 focus:ring-offset-0"
             name="content"
             rows="2"
             placeholder="What's going on, {{ auth()->user()->lname }}?"
@@ -82,12 +77,9 @@
 
       <div class="flex gap-4 text-gray-600">
           <!-- Upload Picture Button -->
-        <div>
-          <input
-            type="file"
-            name="picture"
-            id="picture"
-            class="hidden" />
+        <div id="pictureInput">
+          <input type="file"
+            name="image" id="picture" class="hidden" onchange="previewImage(event)" />
 
           <label
             for="picture"
