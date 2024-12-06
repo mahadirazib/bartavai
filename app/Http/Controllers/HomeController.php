@@ -17,23 +17,12 @@ class HomeController extends Controller
         ->where('is_public', true)
         ->leftJoin('users', 'users.id', '=', 'user_posts.user_id')
         ->orderBy('created_at', 'desc')
-        ->select('user_posts.*', 'users.name as user_name', 'users.pro_pic as user_pic')
+        ->select('user_posts.*', 'users.name as user_name', 'users.pro_pic as user_pic', 'users.fname as user_fname', 'users.lname as user_lname')
         ->paginate();
 
         // dd($user_posts);
         return view('home', ['user_posts' => $user_posts]);
     }
 
-
-    public function publicProfile($id){
-        $user = User::find($id);
-        $posts = UserPost::where('user_posts.user_id', $id)
-        ->leftJoin('users', 'users.id', '=', 'user_posts.user_id')
-        ->orderBy('created_at', 'desc')
-        ->select('user_posts.*', 'users.name as user_name', 'users.pro_pic as user_pic')
-        ->paginate();
-
-        return view('user-profile', ['user'=>$user, 'posts' => $posts]);
-    }
 
 }

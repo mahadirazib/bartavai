@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 use App\Http\Requests\UserPostRequest;
 
@@ -28,7 +29,8 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'content' => 'required'
+            'content' => 'required',
+            'image'   => 'nullable|image|mimes:png,jpg, jpeg|max:2048'
         ]);
 
         if($request['post_status'] == 'draft'){
@@ -37,10 +39,17 @@ class PostController extends Controller
             $data['is_public'] = true;
         }
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $imagePath = $file->storeAs('post_images',  Str::uuid() . '.' . $file->getClientOriginalExtension(), 'public' );
+        }
+
         UserPost::create([
             'user_id' => auth()->user()->id,
             'content' => $data['content'],
             'is_public' => $data['is_public'],
+            'image' => $imagePath,
         ]);
 
         flash()->success('Post Created successfully!');
@@ -54,7 +63,7 @@ class PostController extends Controller
         ->where('is_public', true)
         ->where('user_posts.id', $id)
         ->leftJoin('users', 'users.id', '=', 'user_posts.user_id')
-        ->select('user_posts.*', 'users.name as user_name', 'users.pro_pic as user_pic')
+        ->select('user_posts.*', 'users.name as user_name', 'users.pro_pic as user_pic', 'users.fname as user_fname', 'users.lname as user_lname')
         ->first();
 
         if(!isset($post) || $post == null){
@@ -86,6 +95,19 @@ class PostController extends Controller
             $post->is_public = true;
         }
 
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            if ($post->image && file_exists(public_path('storage/' . $post->image))) {
+                unlink(public_path('storage/' . $post->image));
+            }
+
+            $imagePath = $file->storeAs('post_images',  Str::uuid() . '.' . $file->getClientOriginalExtension(), 'public' );
+            $post->image = $imagePath;
+        }
+
         $post->save();
 
         flash()->success('Post Updated successfully!');
@@ -96,6 +118,11 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         $post = UserPost::find($id);
+
+        if ($post->image && file_exists(public_path('storage/' . $post->image))) {
+            unlink(public_path('storage/' . $post->image));
+        }
+
         if($post->user_id == auth()->user()->id){
             flash()->info('Post Deleted successfully!');
             $post->delete();

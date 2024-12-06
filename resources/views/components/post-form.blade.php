@@ -21,7 +21,7 @@
           class="block w-full p-2 pt-2 text-gray-900 rounded-lg border-none outline-none focus:ring-0 focus:ring-offset-0"
           name="content"
           rows="2"
-          placeholder="What's going on, {{ auth()->user()->lname }}?"></textarea>
+          placeholder="What's going on, {{ auth()->user()->name }}?"></textarea>
       </div>
     </div>
   </div>
@@ -32,15 +32,14 @@
 
     <div class="flex gap-4 text-gray-600">
         <!-- Upload Picture Button -->
-      <div>
-        <input
+      <div class="flex flex-row w-fit">
+        <input onchange="checkFile()"
           type="file"
-          name="picture"
+          name="image"
           id="picture"
           class="hidden" />
-
-        <label
-          for="picture"
+        <span id="file_selected" class="mr-2"></span>
+        <label for="picture" onclick="checkFile()"
           class="-m-2 flex gap-2 text-xs items-center rounded-full p-2 text-gray-600 hover:text-gray-800 cursor-pointer">
           <span class="sr-only">Picture</span>
           <svg
@@ -143,6 +142,35 @@ function showPostForm() {
         form.style.opacity = '1';
         form.classList.add('py-5', 'sm:px-6');
     }, 10);
+}
+
+
+function checkFile() {
+    var fileInput = document.getElementById('picture');
+    if (fileInput.files.length > 0) {
+
+      let fileName = fileInput.files[0].name;
+      let dotIndex = fileName.lastIndexOf('.');
+      if (dotIndex === -1){
+        alert("Please Select a valid file");
+        fileInput.files[0].name = null;
+        return;
+      }
+
+      let name = fileName.substring(0, dotIndex);
+      let extension = fileName.substring(dotIndex);
+
+      if (name.length > 4) {
+        fileName = name.substring(0, 2) + '..' + extension;
+      }
+
+      console.log(fileName);
+      
+
+      let fileNameSpan = document.getElementById('file_selected');
+      fileNameSpan.innerHTML = fileName;
+      
+    }
 }
 
 

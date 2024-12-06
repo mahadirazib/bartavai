@@ -13,6 +13,7 @@ class UserPost extends Model
         'is_public',
         'likes',
         'comments',
+        'image',
     ];
 
 

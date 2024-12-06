@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 use App\Models\User;
-
+use App\Models\UserPost;
 
 class AuthController extends Controller
 {
@@ -97,7 +98,9 @@ class AuthController extends Controller
 
 
     public function showProfile(){
-        return view(view: 'auth.profile');
+        $posts = UserPost::where('user_id', auth()->user()->id)->get();
+
+        return view( 'auth.profile', ['posts' => $posts]);
     }
 
 
@@ -114,14 +117,30 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'fname' => 'required|string|max:255',
             'lname' => 'required|string|max:255',
+            'name'  => 'nullable|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:15',
             'bio'   => 'nullable|string'
         ]);
 
-        $validatedData['name'] = $validatedData['fname']. " " . $validatedData['lname'];
-
         $user = User::where('id', Auth::user()->id)->first();
+
+        $proPicPath = null;
+        if ($request->hasFile('pro_pic')) {
+            $file = $request->file('pro_pic');
+
+            if ($user->pro_pic && file_exists(public_path('storage/' . $user->pro_pic))) {
+                unlink(public_path('storage/' . $user->pro_pic));
+            }
+
+            $proPicPath = $file->storeAs('profile_pictures',  Str::uuid() . '.' . $file->getClientOriginalExtension(), 'public' );
+            $validatedData['pro_pic'] = $proPicPath;
+        }
+
+        if(!$request->has('name')){
+            $validatedData['name'] = $validatedData['fname']. " " . $validatedData['lname'];
+        }
+
         $user->update($validatedData);
 
         flash()->success('Profile updated successfully!');

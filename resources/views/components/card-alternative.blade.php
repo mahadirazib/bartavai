@@ -1,10 +1,19 @@
 
 @php
-  $user_name = $post->user_name;
-  $user_pic = $post->user_pic;
+  $post_owner = $post->user_id;
+
+  if ($post_owner == auth()->user()->id) {
+    $user_name = auth()->user()->name;
+    $user_full_name = auth()->user()->fname . " " . auth()->user()->lname;
+    $user_pic = auth()->user()->pro_pic;
+  }else {
+    $user_name = $post->user_name;
+    $user_full_name = $post->user_fname . " " . $post->user_lname;
+    $user_pic = $post->user_pic;
+  }
+
   $content = $post->content;
   $post_id = $post->id;
-  $post_owner = $post->user_id;
 
   $current_time = now();
   $post_time = Carbon\Carbon::parse($post->created_at)->format('Y-m-d H:i:s');
@@ -138,7 +147,7 @@ class="space-y-6">
   <div class="flex items-center gap-2 text-gray-500 text-xs my-2">
     <span class="">{{ $timeDiffs }}</span>
     <span class="">•</span>
-    <span>{{ $view_count < 1 ? $view_count . " view" : $view_count . " views" }}</span>
+    <span>{{ $view_count < 2 ? $view_count . " view" : $view_count . " views" }}</span>
   </div>
 
 </article>

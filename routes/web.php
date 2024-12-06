@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -29,7 +30,8 @@ Route::post('/profile/update', [AuthController::class, 'updateProfile'])->middle
 
 
 // Public Profile Route
-Route::get('/user/{user_id}', [HomeController::class, 'publicProfile'])->middleware( 'auth')->name('user.public.profile');
+Route::get('/user', [UserController::class, 'publicProfile'])->middleware( 'auth')->name('user.index');
+Route::get('/user/{user_id}', [UserController::class, 'publicProfileSingle'])->middleware( 'auth')->name('user.public.profile');
 
 
 // user single post routes
